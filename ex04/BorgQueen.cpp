@@ -1,31 +1,33 @@
 #include <iostream>
+#include <string>
 #include "BorgQueen.hh"
+#include "Borg.hh"
+#include "Federation.hh"
+#include "Warpsystem.hh"
+#include "Destination.hh"
 
-Borg::BorgQueen::BorgQueen() :
-	movePtr(&Borg::Ship::move),
-	firePtr(&Borg::Ship::fire),
-	destroyPtr(&Borg::Ship::fire)
+Borg::BorgQueen::BorgQueen()
+{
+  this->movePtr = &Borg::Ship::move;
+  this->firePtr = &Borg::Ship::fire;
+  this->destroyPtr = &Borg::Ship::fire;
+}
+
+Borg::BorgQueen::~BorgQueen()
 {
 }
 
-bool Borg::BorgQueen::move(Borg::Ship *ship, Destination d)
+bool Borg::BorgQueen::move(Borg::Ship* borg, Destination d)
 {
-	if (!ship || !this->movePtr)
-		return (false);
-	return ((ship->*(this->movePtr))(d));
+  return ((borg->*movePtr)(d));
 }
 
-void Borg::BorgQueen::fire(Borg::Ship *ship,
-	Federation::Starfleet::Ship *target)
+void Borg::BorgQueen::fire(Borg::Ship* borg, Federation::Starfleet::Ship* sf)
 {
-	if (!ship || !this->firePtr)
-		return;
-	(ship->*(this->firePtr))(target);
+  (borg->*firePtr)(sf);
 }
 
-void Borg::BorgQueen::destroy(Borg::Ship *ship, Federation::Ship *target)
+void Borg::BorgQueen::destroy(Borg::Ship* borg, Federation::Ship* s)
 {
-	if (!ship || !this->destroyPtr)
-		return;
-	(ship->*(this->destroyPtr))(target);
+  (borg->*destroyPtr)(s);
 }

@@ -1,25 +1,34 @@
-#ifndef BORG_QUEEN_HH_
-#define BORG_QUEEN_HH_
+#ifndef _BORGQUEEN_H_
+# define _BORGQUEEN_H_
 
+#include <iostream>
 #include <string>
+
+namespace Borg
+{
+  class BorgQueen;
+}
+
 #include "Borg.hh"
 #include "Federation.hh"
+#include "Warpsystem.hh"
 
-namespace Borg {
+namespace Borg
+{
+  class BorgQueen
+  {
+  public:
+    BorgQueen();
+    ~BorgQueen();
 
-class BorgQueen {
-public:
-	BorgQueen();
+    bool		(Borg::Ship::*movePtr)(Destination);
+    void		(Borg::Ship::*firePtr)(Federation::Starfleet::Ship*);
+    void		(Borg::Ship::*destroyPtr)(Federation::Ship*);
 
-	bool (Borg::Ship::*movePtr)(Destination);
-	void (Borg::Ship::*firePtr)(Federation::Starfleet::Ship *);
-	void (Borg::Ship::*destroyPtr)(Federation::Ship *);
-
-	bool move(Borg::Ship *ship, Destination d);
-	void fire(Borg::Ship *ship, Federation::Starfleet::Ship *target);
-	void destroy(Borg::Ship *ship, Federation::Ship *target);
-};
-
-}; 
+    bool		move(Borg::Ship*, Destination);
+    void		fire(Borg::Ship*, Federation::Starfleet::Ship*);
+    void		destroy(Borg::Ship*, Federation::Ship*);
+  };
+}
 
 #endif
