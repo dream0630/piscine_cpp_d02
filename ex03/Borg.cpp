@@ -1,146 +1,145 @@
+/*
+** EPITECH PROJECT, 2018
+** CPP Pool Day 07
+** File description:
+** Base and Borg Ship classes implementation
+*/
+
+#include <climits>
 #include <iostream>
-#include <string>
-#include "Destination.hh"
-#include "Federation.hh"
 #include "Borg.hh"
+#include "Federation.hh"
 
-
-Borg::Ship::Ship(int wF, short repair)
+Ship::Ship(short maxWarp, Destination home) :
+	_maxWarp(maxWarp), _home(home), _location(home)
 {
-  this->_side = 300;
-  this->_maxWarp = 9;
-  this->_home = UNICOMPLEX;
-  this->_location = this->_home;
-  this->_shield = 100;
-  this->_weaponFrequency = wF;
-  this->_repair = repair;
-  std::cout << "We are the Borgs. Lower your shields and surrender yourselves unconditionally." << std::endl;
-  std::cout << "Your biological characteristics and technologies will be assimilated." << std::endl;
-  std::cout << "Resistance is futile." << std::endl;
 }
 
-Borg::Ship::~Ship()
+bool Ship::move(int warp, Destination d)
 {
-
+	if (warp > this->_maxWarp)
+		return (false);
+	if (d == this->_location)
+		return (false);
+	if (!this->_core->checkReactor() ||
+		!this->_core->checkReactor()->isStable())
+		return (false);
+	this->_location = d;
+	return (true);
 }
 
-void			Borg::Ship::setupCore(WarpSystem::Core *core)
+bool Ship::move(int warp)
 {
-  this->core = core;
+	return (this->move(warp, this->_home));
 }
 
-void			Borg::Ship::checkCore()
+bool Ship::move(Destination d)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  if (!this->core)
-    return;
-  tmp = this->core->checkReactor();
-  std::cout << (tmp->isStable() == true ? "Everything is in order." : "Critical failure imminent.")
-	    << std::endl;
+	return (this->move(SHRT_MIN, d));
 }
 
-
-bool			Borg::Ship::move(int warp, Destination d)
+bool Ship::move()
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > this->_maxWarp || d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
+	return (this->move(SHRT_MIN, this->_home));
 }
 
-bool			Borg::Ship::move(int warp)
+void Ship::setupCore(WarpSystem::Core *core)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > this->_maxWarp || this->_home == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
+	this->_core = core;
 }
 
-bool			Borg::Ship::move(Destination d)
+Borg::Ship::Ship(int weaponFrequency, short repair) :
+	::Ship(9, UNICOMPLEX), _side(300), _shield(100),
+	_weaponFrequency(weaponFrequency), _repair(repair)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
+	std::cout << "We are the Borgs. Lower your shields and surrender "
+		"yourselves unconditionally." << std::endl;
+	std::cout << "Your biological characteristics and technologies will be "
+		"assimilated." << std::endl;
+	std::cout << "Resistance is futile." << std::endl;
 }
 
-bool			Borg::Ship::move()
+Borg::Ship::Ship(int weaponFrequency) : Ship(weaponFrequency, 3)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
 }
 
-int			Borg::Ship::getShield()
+void Borg::Ship::setupCore(WarpSystem::Core *core)
 {
-  return (this->_shield);
+	::Ship::setupCore(core);
 }
 
-void			Borg::Ship::setShield(int shield)
+void Borg::Ship::checkCore() const
 {
-  this->_shield = shield;
+	if (!this->_core || !this->_core->checkReactor())
+		return;
+	if (this->_core->checkReactor()->isStable())
+		std::cout << "Everything is in order." << std::endl;
+	else
+		std::cout << "Critical failure imminent." << std::endl;
 }
 
-int			Borg::Ship::getWeaponFrequency()
+int Borg::Ship::getShield() const
 {
-  return (this->_weaponFrequency);
+	return (this->_shield);
 }
 
-void			Borg::Ship::setWeaponFrequency(int wF)
+int Borg::Ship::getWeaponFrequency() const
 {
-  this->_weaponFrequency = wF;
+	return (this->_weaponFrequency);
 }
 
-short			Borg::Ship::getRepair()
+short Borg::Ship::getRepair() const
 {
-  return (this->_repair);
+	return (this->_repair);
 }
 
-void			Borg::Ship::setRepair(short repair)
+void Borg::Ship::setShield(int shield)
 {
-  this->_repair = repair;
+	this->_shield = shield;
 }
 
-void			Borg::Ship::repair()
+void Borg::Ship::setWeaponFrequency(int weaponFrequency)
 {
-  if (this->_repair > 0)
-    {
-      this->_shield = 100;
-      this->_repair--;
-      std::cout << "Begin shield re-initialisation... Done. Awaiting further instructions."
-		<< std::endl;
-    }
-  else
-    std::cout << "Energy cells depleted, shield weakening." << std::endl;
+	this->_weaponFrequency = weaponFrequency;
 }
 
-void			Borg::Ship::fire(Federation::Starfleet::Ship *ea)
+void Borg::Ship::setRepair(short repair)
 {
-  std::cout << "Firing on target with " << this->_weaponFrequency << "GW frequency." << std::endl;
-  ea->damage(this->_weaponFrequency);
+	this->_repair = repair;
 }
 
-void			Borg::Ship::fire(Federation::Ship *vu)
+void Borg::Ship::fire()
 {
-  std::cout << "Firing on target with " << this->_weaponFrequency << "GW frequency." << std::endl;
-  vu->damage(this->_weaponFrequency);
+	std::cout << "Firing on target with " << this->_weaponFrequency <<
+		"GW frequency." << std::endl;
 }
 
-void			Borg::Ship::damage(int dam)
+void Borg::Ship::fire(Federation::Starfleet::Ship *target)
 {
-  this->_shield = (this->_shield - dam < 0 ? 0 : this->_shield - dam);
+	if (!target)
+		return;
+	this->fire();
+	target->setShield(target->getShield() - this->_weaponFrequency);
+}
+
+void Borg::Ship::fire(Federation::Ship *target)
+{
+	if (!target || !target->getCore() || !target->getCore()->checkReactor())
+		return;
+	this->fire();
+	target->getCore()->checkReactor()->setStability(false);
+}
+
+void Borg::Ship::repair()
+{
+	if (this->_repair > 0) {
+		this->_repair--;
+		this->_shield = 100;
+		std::cout << "Begin shield re-initialisation... Done. "
+			"Awaiting further instructions." << std::endl;
+	}
+	else {
+		std::cout << "Energy cells depleted, shield weakening." <<
+			std::endl;
+	}
 }

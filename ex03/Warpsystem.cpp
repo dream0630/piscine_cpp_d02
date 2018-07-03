@@ -1,38 +1,31 @@
-#include <iostream>
-#include <string>
+/*
+** EPITECH PROJECT, 2018
+** CPP Pool Day 07
+** File description:
+** QuantumReactor class implementation
+*/
+
 #include "Warpsystem.hh"
 
-WarpSystem::QuantumReactor::QuantumReactor()
+WarpSystem::QuantumReactor::QuantumReactor() : _stability(true)
 {
-  this->_stability = true;
 }
 
-WarpSystem::QuantumReactor::~QuantumReactor()
+bool WarpSystem::QuantumReactor::isStable() const
 {
-
+	return (this->_stability);
 }
 
-bool			WarpSystem::QuantumReactor::isStable()
+void WarpSystem::QuantumReactor::setStability(bool stability)
 {
-  return (this->_stability);
+	this->_stability = stability;
 }
 
-void			WarpSystem::QuantumReactor::setStability(bool status)
+WarpSystem::Core::Core(QuantumReactor *coreReactor) : _coreReactor(coreReactor)
 {
-  this->_stability = status;
 }
 
-WarpSystem::Core::Core(QuantumReactor *core)
+WarpSystem::QuantumReactor *WarpSystem::Core::checkReactor() const
 {
-  this->_coreReactor = core;
-}
-
-WarpSystem::Core::~Core()
-{
-
-}
-
-WarpSystem::QuantumReactor	*WarpSystem::Core::checkReactor()
-{
-  return (this->_coreReactor);
+	return (this->_coreReactor);
 }

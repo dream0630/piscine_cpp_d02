@@ -1,32 +1,36 @@
-#ifndef WARPSYSTEM_H_
-# define WARPSYSTEM_H_
+/*
+** EPITECH PROJECT, 2018
+** CPP Pool Day 07
+** File description:
+** WarpSystem namespace and QuantumReactor class definition
+*/
 
-#include <iostream>
-#include <string>
+#if !defined(WARP_SYSTEM_HPP_)
+	#define WARP_SYSTEM_HPP_
 
-namespace			WarpSystem
-{
-  class				QuantumReactor
-  {
-    bool			_stability;
+namespace WarpSystem {
 
-  public:
-    QuantumReactor();
-    ~QuantumReactor();
-    bool			isStable();
-    void			setStability(bool);
-  };
+class QuantumReactor {
+public:
+	QuantumReactor();
 
-  class				Core
-  {
-    QuantumReactor		*_coreReactor;
+	bool isStable() const;
+	void setStability(bool stability);
 
-  public:
-    Core(QuantumReactor *core);
-    ~Core();
-    QuantumReactor		*checkReactor();
-
-  };
+private:
+	bool _stability;
 };
 
-#endif
+class Core {
+public:
+	Core(QuantumReactor *coreReactor);
+
+	QuantumReactor *checkReactor() const;
+
+private:
+	QuantumReactor *_coreReactor;
+};
+
+}; /* namespace WarpSystem */
+
+#endif /* !defined(WARP_SYSTEM_HPP_) */

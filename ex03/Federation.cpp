@@ -1,292 +1,149 @@
+/*
+** EPITECH PROJECT, 2018
+** CPP Pool Day 07
+** File description:
+** Federation and Starfleet Ship classes implementation
+*/
+
 #include <iostream>
-#include <string>
 #include "Federation.hh"
-#include "Destination.hh"
-#include "Borg.hh"
 
-Federation::Starfleet::Ship::Ship(int length, int width, std::string name, short maxWarp, int torpedo)
+Federation::Ship::Ship(int length, int width,
+	std::string name, short maxWarp, Destination home) :
+	::Ship(maxWarp, home), _name(name), _length(length), _width(width)
 {
-  this->_length = length;
-  this->_width = width;
-  this->_name = name;
-  this->_maxWarp = maxWarp;
-  this->_home = EARTH;
-  this->_location = this->_home;
-  this->_shield = 100;
-  this->_photonTorpedo = torpedo;
-
-  std::cout << "The ship USS " << this->_name << " has been finished. It is "
-	    << this->_length << " m in length and " << this->_width << " m in width."
-	    << "It can go to Warp " << this->_maxWarp << "! Weapons are set: "
-	    << this->_photonTorpedo << " torpedoes ready." << std::endl;
 }
 
-Federation::Starfleet::Ship::~Ship()
+Federation::Ship::Ship(int length, int width, std::string name) :
+	Federation::Ship(length, width, name, 1, VULCAN)
 {
-
+	std::cout << "The independant ship " << name << " just finished its "
+		"construction. It is " << length << " m in length and " <<
+		width << " m in width." << std::endl;
 }
 
-void		Federation::Starfleet::Ship::setupCore(WarpSystem::Core *core)
+void Federation::Ship::setupCore(WarpSystem::Core *core)
 {
-  this->core = core;
-  std::cout << "USS " << this->_name << ": The core is set." << std::endl;
+	::Ship::setupCore(core);
+	std::cout << this->_name << ": The core is set." << std::endl;
 }
 
-void		Federation::Starfleet::Ship::checkCore()
+void Federation::Ship::checkCore() const
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  if (!this->core)
-    return;
-  tmp = this->core->checkReactor();
-  std::cout << "USS " << this->_name << ": The core is "
-	    << (tmp->isStable() == true ? "stable" : "unstable")
-	    << " at the time." << std::endl;
+	if (!this->_core || !this->_core->checkReactor())
+		return;
+	bool stability = this->_core->checkReactor()->isStable();
+	std::cout << this->_name << ": The core is " <<
+		(stability ? "stable" : "unstable") << " at the time." <<
+		std::endl;
 }
 
-void		Federation::Starfleet::Ship::promote(Captain *cap)
+WarpSystem::Core *Federation::Ship::getCore() const
 {
-  this->cap = cap;
-  std::cout << this->cap->getName() << ": I'm glad to be the captain of the USS "
-	    << this->_name << "." << std::endl;
+	return (this->_core);
 }
 
-bool			Federation::Starfleet::Ship::move(int warp, Destination d)
+Federation::Starfleet::Ship::Ship(
+	int length, int width, std::string name, short maxWarp, int torpedo) :
+	Federation::Ship(length, width, name, maxWarp, EARTH),
+	_shield(100), _photonTorpedo(torpedo)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > this->_maxWarp || d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
+	std::cout << "The ship USS " << name << " has been finished. It is " <<
+		length << " m in length and " << width << " m in width. "
+		"It can go to Warp " << maxWarp << "! Weapons are set: " <<
+		torpedo << " torpedoes ready." << std::endl;
 }
 
-bool			Federation::Starfleet::Ship::move(int warp)
+Federation::Starfleet::Ship::Ship() :
+	Federation::Starfleet::Ship::Ship(289, 132, "Entreprise", 6, 20)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > this->_maxWarp || this->_home == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
 }
 
-bool			Federation::Starfleet::Ship::move(Destination d)
+void Federation::Starfleet::Ship::setupCore(WarpSystem::Core *core)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
+	::Ship::setupCore(core);
+	std::cout << "USS " << this->_name << ": The core is set." << std::endl;
 }
 
-bool			Federation::Starfleet::Ship::move()
+void Federation::Starfleet::Ship::checkCore() const
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
+	if (!this->_core || !this->_core->checkReactor())
+		return;
+	bool stability = this->_core->checkReactor()->isStable();
+	std::cout << "USS " << this->_name << ": The core is " <<
+		(stability ? "stable" : "unstable") << " at the time." <<
+		std::endl;
 }
 
-int			Federation::Starfleet::Ship::getShield()
+void Federation::Starfleet::Ship::promote(
+	Federation::Starfleet::Captain *captain)
 {
-  return (this->_shield);
+	this->_captain = captain;
+	if (!captain)
+		return;
+	std::cout << captain->getName() << ": I'm glad to be the captain of "
+		"the USS " << this->_name << "." << std::endl;
 }
 
-void			Federation::Starfleet::Ship::setShield(int shield)
+int Federation::Starfleet::Ship::getShield() const
 {
-  this->_shield = shield;
+	return (this->_shield);
 }
 
-int			Federation::Starfleet::Ship::getTorpedo()
+int Federation::Starfleet::Ship::getTorpedo() const
 {
-  return (this->_photonTorpedo);
+	return (this->_photonTorpedo);
 }
 
-void			Federation::Starfleet::Ship::setTorpedo(int torpedo)
+void Federation::Starfleet::Ship::setShield(int shield)
 {
-  this->_photonTorpedo = torpedo;
+	this->_shield = shield;
 }
 
-void			Federation::Starfleet::Ship::fire(Borg::Ship* borg)
+void Federation::Starfleet::Ship::setTorpedo(int torpedo)
 {
-  int			torpedo = 1;
+	this->_photonTorpedo = torpedo;
+}
 
-  if (torpedo <= this->_photonTorpedo)
+void	Federation::Starfleet::Ship::fire(int torpedoes, Borg::Ship* borg)
+{
+  if (this->getTorpedo() - torpedoes >= 0)
     {
-      borg->damage(50 * torpedo);
-      this->_photonTorpedo = this->_photonTorpedo -torpedo;
-      std::cout << this->_name << ": Firing on target. " << this->_photonTorpedo
-		<< " torpedoes remaining." << std::endl;
+      this->setTorpedo(this->getTorpedo() - torpedoes);
+      std::cout << this->_name << ": Firing on target. " << this->getTorpedo() << " torpedoes remaining." << std::endl;
+      borg->setShield(borg->getShield() - (torpedoes * 50));
     }
-  else if (torpedo > this->_photonTorpedo)
-    std::cout << this->_name << ": No enough torpedoes to fire, " << this->cap->getName()
-	      << "!" << std::endl;
-  else if (this->_photonTorpedo <= 0)
-    std::cout << this->_name << ": No more torpedo to fire, " << this->cap->getName()
-	      << "!" << std::endl;
-  else
-    return;  
+  else if (this->getTorpedo() == 0)
+    std:: cout << this->_name << ": No more torpedo to fire, " << (this->_captain)->getName() << "!" << std::endl;
+  else if (this->getTorpedo() - torpedoes < 0)
+    std::cout << this->_name << ": No enough torpedoes to fire, " << (this->_captain)->getName() << "!" << std::endl;
 }
 
-void			Federation::Starfleet::Ship::fire(int torpedo, Borg::Ship* borg)
+void Federation::Starfleet::Ship::fire(Borg::Ship *target)
 {
-  if (torpedo <= this->_photonTorpedo)
-    {
-      this->_photonTorpedo = this->_photonTorpedo - torpedo;
-      borg->damage(50 * torpedo);
-      std::cout << this->_name << ": Firing on target. " << this->_photonTorpedo
-		<< " torpedoes remaining." << std::endl;
-    }
-  else if (torpedo > this->_photonTorpedo)
-    std::cout << this->_name << ": No enough torpedoes to fire, " << this->cap->getName()
-	      << "!" << std::endl;
-  else if (this->_photonTorpedo <= 0)
-    std::cout << this->_name << ": No more torpedo to fire, " << this->cap->getName()
-	      << "!" << std::endl;
-  else
-    return;
+	this->fire(1, target);
 }
 
-void			Federation::Starfleet::Ship::damage(int dam)
+Federation::Starfleet::Captain::Captain(std::string name) : _name(name), _age(0)
 {
-  this->_shield = (this->_shield - dam < 0 ? 0 : this->_shield - dam);
 }
 
-Federation::Ship::Ship(int length, int width, std::string name)
+std::string Federation::Starfleet::Captain::getName() const
 {
-  this->_length = length;
-  this->_width = width;
-  this->_name = name;
-  this->_home = VULCAN;
-  this->_location = this->_home;
-  std::cout << "The independant ship " << this->_name << " just finished its construction."
-	    << " It is " <<this->_length << " m in length and " << this->_width
-	    << " m in width." << std::endl;
+	return (this->_name);
 }
 
-Federation::Ship::~Ship()
+int Federation::Starfleet::Captain::getAge() const
 {
-
+	return (this->_age);
 }
 
-void		Federation::Ship::setupCore(WarpSystem::Core *core)
+void Federation::Starfleet::Captain::setAge(int age)
 {
-  this->core = core;
-  std::cout << this->_name << ": The core is set." << std::endl;
+	this->_age = age;
 }
 
-void		Federation::Ship::checkCore()
+Federation::Starfleet::Ensign::Ensign(std::string name) : _name(name)
 {
-  WarpSystem::QuantumReactor	*tmp;
-
-  if (!this->core)
-    return;
-  tmp = this->core->checkReactor();
-  std::cout << this->_name << ": The core is "
-	    << (tmp->isStable() == true ? "stable" : "unstable")
-	    << " at the time." << std::endl;
-}
-
-bool			Federation::Ship::move(int warp, Destination d)
-{
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > 1 || d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
-}
-
-bool			Federation::Ship::move(int warp)
-{
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (warp > 1 || this->_home == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
-}
-
-bool			Federation::Ship::move(Destination d)
-{
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (d == this->_location || tmp->isStable() == false)
-    return (false);
-  this->_location = d;
-  return (true);
-}
-
-bool			Federation::Ship::move()
-{
-  WarpSystem::QuantumReactor	*tmp;
-
-  tmp = this->core->checkReactor();
-  if (tmp->isStable() == false)
-    return (false);
-  this->_location = this->_home;
-  return (true);
-}
-
-WarpSystem::Core*	Federation::Ship::getCore()
-{
-  return (this->core);
-}
-
-void			Federation::Ship::damage(int dam)
-{
-  WarpSystem::Core	*tmp;
-  WarpSystem::QuantumReactor	*tmp2;
-
-  (void)dam;
-  tmp = this->getCore();
-  tmp2 = tmp->checkReactor();
-  tmp2->setStability(false);
-}
-
-Federation::Starfleet::Captain::Captain(std::string name)
-{
-  this->_name = name;
-}
-
-Federation::Starfleet::Captain::~Captain()
-{
-
-}
-
-std::string		Federation::Starfleet::Captain::getName()
-{
-  return (this->_name);
-}
-
-int			Federation::Starfleet::Captain::getAge()
-{
-  return (this->_age);
-};
-
-void			Federation::Starfleet::Captain::setAge(int age)
-{
-  this->_age = age;
-}
-
-Federation::Starfleet::Ensign::Ensign(std::string name)
-{
-  this->_name = name;
-  std::cout << "Ensign " << this->_name << ", awaiting orders." << std::endl;
-}
-
-Federation::Starfleet::Ensign::~Ensign()
-{
-
+	std::cout << "Ensign " << name << ", awaiting orders." << std::endl;
 }
