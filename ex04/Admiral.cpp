@@ -1,30 +1,30 @@
 #include <iostream>
-#include <string>
 #include "Admiral.hh"
-#include "Borg.hh"
-#include "Federation.hh"
-#include "Warpsystem.hh"
-#include "Destination.hh"
 
-Federation::Starfleet::Admiral::Admiral(std::string name)
+Federation::Starfleet::Admiral::Admiral(std::string name) :
+	movePtr(&Federation::Starfleet::Ship::move),
+	firePtr(&Federation::Starfleet::Ship::fire),
+	_name(name)
 {
-  this->_name = name;
-  this->movePtr = &Federation::Starfleet::Ship::move;
-  this->firePtr = &Federation::Starfleet::Ship::fire;
-  std::cout << "Admiral " << name << " ready for action." << std::endl;
+	std::cout << "Admiral " << name << " ready for action." << std::endl;
 }
 
-Federation::Starfleet::Admiral::~Admiral()
+bool Federation::Starfleet::Admiral::move(Federation::Starfleet::Ship *ship,
+	Destination d)
 {
+	if (!ship || !this->movePtr)
+		return (false);
+	std::cout << "On order from Admiral " << this->_name << ":" <<
+		std::endl;
+	return ((ship->*(this->movePtr))(d));
 }
 
-void Federation::Starfleet::Admiral::fire(Federation::Starfleet::Ship* sf, Borg::Ship* borg)
+void Federation::Starfleet::Admiral::fire(Federation::Starfleet::Ship *ship,
+	Borg::Ship *target)
 {
-  std::cout << "On order from Admiral " << this->_name << ":"  << std::endl;
-  (sf->*firePtr)(borg);
-}
-
-bool Federation::Starfleet::Admiral::move(Federation::Starfleet::Ship* sf, Destination d)
-{
-  return ((sf->*movePtr)(d));
+	if (!ship || !this->firePtr)
+		return;
+	std::cout << "On order from Admiral " << this->_name << ":" <<
+		std::endl;
+	(ship->*(this->firePtr))(target);
 }

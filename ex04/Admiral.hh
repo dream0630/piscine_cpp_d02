@@ -1,40 +1,28 @@
-#ifndef _ADMIRAL_H_
-# define _ADMIRAL_H_
+#ifndef ADMIRAL_HH_
+#define ADMIRAL_HH_
 
-#include <iostream>
 #include <string>
-
-namespace Federation
-{
-    namespace Starfleet
-    {
-      class Admiral;
-    }
-}
-
-#include "Borg.hh"
 #include "Federation.hh"
-#include "Warpsystem.hh"
+#include "Borg.hh"
 
-namespace Federation
-{
-  namespace Starfleet
-  {
-    class Admiral
-    {
-      std::string		_name;
+namespace Federation {
+namespace Starfleet {
 
-    public:
-      Admiral(std::string name);
-      ~Admiral();
+class Admiral {
+public:
+	Admiral(std::string name);
 
-      bool		(Federation::Starfleet::Ship::*movePtr)(Destination);
-      void		(Federation::Starfleet::Ship::*firePtr)(Borg::Ship*);
+	bool (Federation::Starfleet::Ship::*movePtr)(Destination);
+	void (Federation::Starfleet::Ship::*firePtr)(Borg::Ship *);
 
-      void		fire(Federation::Starfleet::Ship*, Borg::Ship*);
-      bool		move(Federation::Starfleet::Ship*, Destination);
-    };
-  }
-}
+	bool move(Federation::Starfleet::Ship *ship, Destination d);
+	void fire(Federation::Starfleet::Ship *ship, Borg::Ship *target);
+
+private:
+	std::string _name;
+};
+
+}; 
+}; 
 
 #endif
