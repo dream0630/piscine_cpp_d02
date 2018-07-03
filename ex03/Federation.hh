@@ -1,5 +1,5 @@
-#ifndef (FEDERATION_HPP_)
-# define FEDERATION_HPP_
+#ifndef FEDERATION_HPP_
+#define FEDERATION_HPP_
 
 #include <iostream>
 #include "Borg.hh"
