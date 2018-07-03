@@ -1,138 +1,146 @@
-#include <climits>
 #include <iostream>
-#include "Borg.hh"
+#include <string>
+#include "Destination.hh"
 #include "Federation.hh"
+#include "Borg.hh"
 
-Ship::Ship(short maxWarp, Destination home) :
-	_maxWarp(maxWarp), _home(home), _location(home)
+
+Borg::Ship::Ship(int wF, short repair)
 {
+  this->_side = 300;
+  this->_maxWarp = 9;
+  this->_home = UNICOMPLEX;
+  this->_location = this->_home;
+  this->_shield = 100;
+  this->_weaponFrequency = wF;
+  this->_repair = repair;
+  std::cout << "We are the Borgs. Lower your shields and surrender yourselves unconditionally." << std::endl;
+  std::cout << "Your biological characteristics and technologies will be assimilated." << std::endl;
+  std::cout << "Resistance is futile." << std::endl;
 }
 
-bool Ship::move(int warp, Destination d)
+Borg::Ship::~Ship()
 {
-	if (warp > this->_maxWarp)
-		return (false);
-	if (d == this->_location)
-		return (false);
-	if (!this->_core->checkReactor() ||
-		!this->_core->checkReactor()->isStable())
-		return (false);
-	this->_location = d;
-	return (true);
+
 }
 
-bool Ship::move(int warp)
+void			Borg::Ship::setupCore(WarpSystem::Core *core)
 {
-	return (this->move(warp, this->_home));
+  this->core = core;
 }
 
-bool Ship::move(Destination d)
+void			Borg::Ship::checkCore()
 {
-	return (this->move(SHRT_MIN, d));
+  WarpSystem::QuantumReactor	*tmp;
+
+  if (!this->core)
+    return;
+  tmp = this->core->checkReactor();
+  std::cout << (tmp->isStable() == true ? "Everything is in order." : "Critical failure imminent.")
+	    << std::endl;
 }
 
-bool Ship::move()
+
+bool			Borg::Ship::move(int warp, Destination d)
 {
-	return (this->move(SHRT_MIN, this->_home));
+  WarpSystem::QuantumReactor	*tmp;
+
+  tmp = this->core->checkReactor();
+  if (warp > this->_maxWarp || d == this->_location || tmp->isStable() == false)
+    return (false);
+  this->_location = d;
+  return (true);
 }
 
-void Ship::setupCore(WarpSystem::Core *core)
+bool			Borg::Ship::move(int warp)
 {
-	this->_core = core;
+  WarpSystem::QuantumReactor	*tmp;
+
+  tmp = this->core->checkReactor();
+  if (warp > this->_maxWarp || this->_home == this->_location || tmp->isStable() == false)
+    return (false);
+  this->_location = this->_home;
+  return (true);
 }
 
-Borg::Ship::Ship(int weaponFrequency, short repair) :
-	::Ship(9, UNICOMPLEX), _side(300), _shield(100),
-	_weaponFrequency(weaponFrequency), _repair(repair)
+bool			Borg::Ship::move(Destination d)
 {
-	std::cout << "We are the Borgs. Lower your shields and surrender "
-		"yourselves unconditionally." << std::endl;
-	std::cout << "Your biological characteristics and technologies will be "
-		"assimilated." << std::endl;
-	std::cout << "Resistance is futile." << std::endl;
+  WarpSystem::QuantumReactor	*tmp;
+
+  tmp = this->core->checkReactor();
+  if (d == this->_location || tmp->isStable() == false)
+    return (false);
+  this->_location = d;
+  return (true);
 }
 
-Borg::Ship::Ship(int weaponFrequency) : Ship(weaponFrequency, 3)
+bool			Borg::Ship::move()
 {
+  WarpSystem::QuantumReactor	*tmp;
+
+  tmp = this->core->checkReactor();
+  if (tmp->isStable() == false)
+    return (false);
+  this->_location = this->_home;
+  return (true);
 }
 
-void Borg::Ship::setupCore(WarpSystem::Core *core)
+int			Borg::Ship::getShield()
 {
-	::Ship::setupCore(core);
+  return (this->_shield);
 }
 
-void Borg::Ship::checkCore() const
+void			Borg::Ship::setShield(int shield)
 {
-	if (!this->_core || !this->_core->checkReactor())
-		return;
-	if (this->_core->checkReactor()->isStable())
-		std::cout << "Everything is in order." << std::endl;
-	else
-		std::cout << "Critical failure imminent." << std::endl;
+  this->_shield = shield;
 }
 
-int Borg::Ship::getShield() const
+int			Borg::Ship::getWeaponFrequency()
 {
-	return (this->_shield);
+  return (this->_weaponFrequency);
 }
 
-int Borg::Ship::getWeaponFrequency() const
+void			Borg::Ship::setWeaponFrequency(int wF)
 {
-	return (this->_weaponFrequency);
+  this->_weaponFrequency = wF;
 }
 
-short Borg::Ship::getRepair() const
+short			Borg::Ship::getRepair()
 {
-	return (this->_repair);
+  return (this->_repair);
 }
 
-void Borg::Ship::setShield(int shield)
+void			Borg::Ship::setRepair(short repair)
 {
-	this->_shield = shield;
+  this->_repair = repair;
 }
 
-void Borg::Ship::setWeaponFrequency(int weaponFrequency)
+void			Borg::Ship::repair()
 {
-	this->_weaponFrequency = weaponFrequency;
+  if (this->_repair > 0)
+    {
+      this->_shield = 100;
+      this->_repair--;
+      std::cout << "Begin shield re-initialisation... Done. Awaiting further instructions."
+		<< std::endl;
+    }
+  else
+    std::cout << "Energy cells depleted, shield weakening." << std::endl;
 }
 
-void Borg::Ship::setRepair(short repair)
+void			Borg::Ship::fire(Federation::Starfleet::Ship *ea)
 {
-	this->_repair = repair;
+  std::cout << "Firing on target with " << this->_weaponFrequency << "GW frequency." << std::endl;
+  ea->damage(this->_weaponFrequency);
 }
 
-void Borg::Ship::fire()
+void			Borg::Ship::fire(Federation::Ship *vu)
 {
-	std::cout << "Firing on target with " << this->_weaponFrequency <<
-		"GW frequency." << std::endl;
+  std::cout << "Firing on target with " << this->_weaponFrequency << "GW frequency." << std::endl;
+  vu->damage(this->_weaponFrequency);
 }
 
-void Borg::Ship::fire(Federation::Starfleet::Ship *target)
+void			Borg::Ship::damage(int dam)
 {
-	if (!target)
-		return;
-	this->fire();
-	target->setShield(target->getShield() - this->_weaponFrequency);
-}
-
-void Borg::Ship::fire(Federation::Ship *target)
-{
-	if (!target || !target->getCore() || !target->getCore()->checkReactor())
-		return;
-	this->fire();
-	target->getCore()->checkReactor()->setStability(false);
-}
-
-void Borg::Ship::repair()
-{
-	if (this->_repair > 0) {
-		this->_repair--;
-		this->_shield = 100;
-		std::cout << "Begin shield re-initialisation... Done. "
-			"Awaiting further instructions." << std::endl;
-	}
-	else {
-		std::cout << "Energy cells depleted, shield weakening." <<
-			std::endl;
-	}
+  this->_shield = (this->_shield - dam < 0 ? 0 : this->_shield - dam);
 }

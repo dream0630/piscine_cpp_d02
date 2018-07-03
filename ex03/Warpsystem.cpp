@@ -1,24 +1,38 @@
+#include <iostream>
+#include <string>
 #include "Warpsystem.hh"
 
-WarpSystem::QuantumReactor::QuantumReactor() : _stability(true)
+WarpSystem::QuantumReactor::QuantumReactor()
 {
+  this->_stability = true;
 }
 
-bool WarpSystem::QuantumReactor::isStable() const
+WarpSystem::QuantumReactor::~QuantumReactor()
 {
-	return (this->_stability);
+
 }
 
-void WarpSystem::QuantumReactor::setStability(bool stability)
+bool			WarpSystem::QuantumReactor::isStable()
 {
-	this->_stability = stability;
+  return (this->_stability);
 }
 
-WarpSystem::Core::Core(QuantumReactor *coreReactor) : _coreReactor(coreReactor)
+void			WarpSystem::QuantumReactor::setStability(bool status)
 {
+  this->_stability = status;
 }
 
-WarpSystem::QuantumReactor *WarpSystem::Core::checkReactor() const
+WarpSystem::Core::Core(QuantumReactor *core)
 {
-	return (this->_coreReactor);
+  this->_coreReactor = core;
+}
+
+WarpSystem::Core::~Core()
+{
+
+}
+
+WarpSystem::QuantumReactor	*WarpSystem::Core::checkReactor()
+{
+  return (this->_coreReactor);
 }

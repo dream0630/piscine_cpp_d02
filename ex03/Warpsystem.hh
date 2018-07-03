@@ -1,29 +1,32 @@
-#ifndef WARP_SYSTEM_HPP_
-#define WARP_SYSTEM_HPP_
+#ifndef WARPSYSTEM_H_
+# define WARPSYSTEM_H_
 
-namespace WarpSystem {
+#include <iostream>
+#include <string>
 
-class QuantumReactor {
-public:
-	QuantumReactor();
+namespace			WarpSystem
+{
+  class				QuantumReactor
+  {
+    bool			_stability;
 
-	bool isStable() const;
-	void setStability(bool stability);
+  public:
+    QuantumReactor();
+    ~QuantumReactor();
+    bool			isStable();
+    void			setStability(bool);
+  };
 
-private:
-	bool _stability;
+  class				Core
+  {
+    QuantumReactor		*_coreReactor;
+
+  public:
+    Core(QuantumReactor *core);
+    ~Core();
+    QuantumReactor		*checkReactor();
+
+  };
 };
 
-class Core {
-public:
-	Core(QuantumReactor *coreReactor);
-
-	QuantumReactor *checkReactor() const;
-
-private:
-	QuantumReactor *_coreReactor;
-};
-
-}; /* namespace WarpSystem */
-
-#endif /* !defined(WARP_SYSTEM_HPP_) */
+#endif
