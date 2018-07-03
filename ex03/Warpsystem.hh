@@ -1,12 +1,5 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** WarpSystem namespace and QuantumReactor class definition
-*/
-
-#if !defined(WARP_SYSTEM_HPP_)
-	#define WARP_SYSTEM_HPP_
+#ifndef WARP_SYSTEM_HPP_
+#define WARP_SYSTEM_HPP_
 
 namespace WarpSystem {
 

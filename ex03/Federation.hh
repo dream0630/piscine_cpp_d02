@@ -1,15 +1,8 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** Federation namespace and Ship classes definitions
-*/
+#ifndef (FEDERATION_HPP_)
+# define FEDERATION_HPP_
 
-#if !defined (FEDERATION_HPP_)
-	# define FEDERATION_HPP_
-
-	#include <iostream>
-	#include "Borg.hh"
+#include <iostream>
+#include "Borg.hh"
 
 namespace Federation {
 

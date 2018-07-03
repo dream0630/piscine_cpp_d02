@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** Base and Borg Ship classes implementation
-*/
-
 #include <climits>
 #include <iostream>
 #include "Borg.hh"

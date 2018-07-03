@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** QuantumReactor class implementation
-*/
-
 #include "Warpsystem.hh"
 
 WarpSystem::QuantumReactor::QuantumReactor() : _stability(true)

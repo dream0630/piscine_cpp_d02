@@ -1,14 +1,7 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** Borg namespace and Base and Borg Ship classes definition
-*/
-
-#if !defined (BORG_HPP_)
-	#define BORG_HPP_
-	#include "Warpsystem.hh"
-	#include "Destination.hh"
+#ifndef BORG_HPP_
+#define BORG_HPP_
+#include "Warpsystem.hh"
+#include "Destination.hh"
 
 class Ship {
 public:

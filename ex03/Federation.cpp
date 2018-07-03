@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2018
-** CPP Pool Day 07
-** File description:
-** Federation and Starfleet Ship classes implementation
-*/
-
 #include <iostream>
 #include "Federation.hh"
 
